@@ -1,0 +1,17 @@
+from . import DialogueTitle, DialogueTitleMap, TranslationScheme
+from . import special_chars as chars
+
+dialog_map = DialogueTitleMap([
+{DIALOGUE_TITLES}
+])
+
+def should_translate(line: str) -> bool:
+    """
+    If the line has text that should be translated, returns True.
+    Otherwise, returns False.
+    """
+    # Lines that aren't blank and don't start with directives or dialogue title brackets.
+    excluded_chars = (chars.caret, chars.pct, chars.jp_at, chars.bracket_start, chars.bracket_end)
+    return bool(line.strip()) and not line.startswith(excluded_chars)
+
+biman5 = TranslationScheme(dialog_map, should_translate, 'utf-16', 'zh', 'en')
