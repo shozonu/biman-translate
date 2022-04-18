@@ -25,9 +25,10 @@ def cli():
 @click.option('--deepl-api-token', envvar='DEEPL_API_TOKEN', help='The DeepL API key for the DeepL REST API. This is required.')
 @click.option('--deepl-pro', is_flag=True, help='Use the paid DeepL Pro REST API instead of the free one.')
 @click.option('--biman-path-prefix', type=str, envvar='BIMAN_PATH_PREFIX', help='The path to prepend FILENAME and OUT_FILENAME with.')
+@click.option('--max-threads', type=int, default=128, help='Maximum number of threads for concurrent translation requests.')
 def translate_file(scheme_name: str, filename: str, out_filename: str,
                    deepl_api_token: str, deepl_pro: bool,
-                   biman_path_prefix: str):
+                   biman_path_prefix: str, max_threads: int):
     """
     Translates a single scenario file.
     """
@@ -41,7 +42,7 @@ def translate_file(scheme_name: str, filename: str, out_filename: str,
         return
 
     filepath = f'{biman_path_prefix}/{filename.strip()}' if biman_path_prefix else filename.strip()
-    deepl = DeeplTranslator(api_key=deepl_api_token, scheme=scheme, free_api=(not deepl_pro))
+    deepl = DeeplTranslator(api_key=deepl_api_token, scheme=scheme, free_api=(not deepl_pro), max_threads=max_threads)
     lines = deepl.translate(filepath)
     if not lines:
         logger.info('No lines returned from deepl.translate.')
@@ -59,9 +60,10 @@ def translate_file(scheme_name: str, filename: str, out_filename: str,
 @click.option('--deepl-api-token', envvar='DEEPL_API_TOKEN', help='The DeepL API key for the DeepL REST API. This is required.')
 @click.option('--deepl-pro', is_flag=True, help='Use the paid DeepL Pro REST API instead of the free one.')
 @click.option('--biman-path-prefix', type=str, envvar='BIMAN_PATH_PREFIX', help='The path to prepend DIRECTORY and OUT_DIRECTORY with.')
+@click.option('--max-threads', type=int, default=128, help='Maximum number of threads for concurrent translation requests.')
 def translate_folder(scheme_name: str, directory: str, out_directory: str,
                      deepl_api_token: str, deepl_pro: bool,
-                     biman_path_prefix: str):
+                     biman_path_prefix: str, max_threads: int):
     """
     Translates all scenario files in this folder and sub-folders.
     """
@@ -82,7 +84,7 @@ def translate_folder(scheme_name: str, directory: str, out_directory: str,
         logger.info('Did not find any files to process.')
         return
 
-    deepl = DeeplTranslator(api_key=deepl_api_token, scheme=scheme, free_api=(not deepl_pro))
+    deepl = DeeplTranslator(api_key=deepl_api_token, scheme=scheme, free_api=(not deepl_pro), max_threads=max_threads)
     for filename in input_filenames:
         lines = deepl.translate(filename)
         outfilename = filename.removeprefix(game_path)
