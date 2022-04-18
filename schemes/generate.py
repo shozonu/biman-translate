@@ -5,6 +5,7 @@ from typing import Optional, Sequence
 from click import progressbar
 
 from utils.helpers import dialog_title_text
+from utils.special_chars import bracket_start as brkt_s
 
 def from_template(directory: Sequence[str], out_py_filename: str, encoding: Optional[str] = 'utf-16',
                   template_fp: Optional[str] = 'resources/scheme_template.txt'):
@@ -23,7 +24,7 @@ def from_template(directory: Sequence[str], out_py_filename: str, encoding: Opti
         for filename in pbar:
             with open(filename, 'r', encoding=encoding) as file:
                 for line in file:
-                    if line.strip() and (title_text := dialog_title_text(line)):
+                    if line.strip() and line.startswith(brkt_s) and (title_text := dialog_title_text(line)):
                         untranslated_names.add(title_text)
     logger.info(f'Found {len(untranslated_names)} unique dialogue titles.')
 
@@ -31,9 +32,10 @@ def from_template(directory: Sequence[str], out_py_filename: str, encoding: Opti
     with open(template_fp, 'r') as file:
         content = file.read()
     # Format the DialogueTitle entries and format template content.
-    titles = ",\n".join([f"    DialogueTitle('{name}', '', False)" for name in untranslated_names])
+    titles = ",\n".join([f"    DialogueTitle('{name}', '', False)" for name in sorted(untranslated_names)])
     content = content.format(DIALOGUE_TITLES=titles)
     # Save to a `.py` file.
+    logger.info(f'Saving generated TranslationScheme to {out_py_filename}')
     with open(out_py_filename, 'w') as file:
         file.write(content)
     # Note that the user will still need to manually modify the .py file contents with the target text
