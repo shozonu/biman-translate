@@ -51,6 +51,8 @@ Options:
                             free one.
   --biman-path-prefix TEXT  The path to prepend DIRECTORY and OUT_DIRECTORY
                             with.
+  --max-threads INTEGER     Maximum number of threads for concurrent
+                            translation requests.
 ```
 ```
 Usage: biman-tl.py translate-file [OPTIONS] SCHEME_NAME FILENAME OUT_FILENAME
@@ -64,6 +66,8 @@ Options:
                             free one.
   --biman-path-prefix TEXT  The path to prepend FILENAME and OUT_FILENAME
                             with.
+  --max-threads INTEGER     Maximum number of threads for concurrent
+                            translation requests.
 ```
 
 ## **File and Format Details**
