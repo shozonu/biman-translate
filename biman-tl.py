@@ -89,7 +89,7 @@ def translate_folder(scheme_name: str, directory: str, out_directory: str,
         lines = deepl.translate(filename)
         outfilename = filename.removeprefix(game_path)
         outfilename = f'{biman_path_prefix}{out_directory}{outfilename}'
-        os.makedirs(f'{outfilename.rsplit("/")[0]}', exist_ok=True)
+        os.makedirs(f'{outfilename.rsplit("/", 1)[0]}', exist_ok=True)
         logger.info(f'Writing translated file to: {outfilename}\n')
         with open(outfilename, 'w', encoding=scheme.encoding) as file:
             file.writelines(lines)
